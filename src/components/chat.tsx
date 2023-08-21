@@ -1,11 +1,14 @@
 "use client";
 
 import { useChat } from "ai/react";
+import LoginButton from "./loginButton";
+
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
   return (
     <div className="w-full min-h-screen bg-gray-200 flex flex-col justify-between p-4 overflow-y-auto">
+      {/* <LoginButton /> */}
       <div className="p-2 flex flex-col">
         {messages.length > 0 ? (
           messages.map((item: any) => {
@@ -38,6 +41,7 @@ export default function Chat() {
           <input
             className=" w-full max-w-md bottom-0 border border-gray-300 rounded-lg mb-8 text-black shadow-xl p-2"
             value={input}
+            placeholder=""
             onChange={handleInputChange}
           />
         </label>

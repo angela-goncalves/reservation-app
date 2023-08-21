@@ -22,19 +22,19 @@ export const {
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
-  callbacks: {
-    jwt({ token, profile }) {
-      if (profile) {
-        console.log(profile);
-        // token.id = profile.id;
-        // token.image = profile.picture;
-      }
-      return token;
-    },
-    // authorized({ auth }) {
-    //   return !!auth?.user; // this ensures there is a logged in user for -every- request
-    // },
-  },
+  // callbacks: {
+  //   jwt({ token, profile }) {
+  //     if (profile) {
+  //       console.log(profile);
+  //       // token.id = profile.id;
+  //       // token.image = profile.picture;
+  //     }
+  //     return token;
+  //   },
+  //   // authorized({ auth }) {
+  //   //   return !!auth?.user; // this ensures there is a logged in user for -every- request
+  //   // },
+  // },
   pages: {
     signIn: "/sign-in", // overrides the next-auth default signin page https://authjs.dev/guides/basics/pages
   },

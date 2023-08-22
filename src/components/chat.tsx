@@ -1,11 +1,9 @@
 "use client";
 
 import { useChat } from "ai/react";
-import LoginButton from "./loginButton";
 
-export default function Chat() {
+export default function Chat({ rest }: any) {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
-
   return (
     <div className="w-full min-h-screen bg-gray-200 flex flex-col justify-between p-4 overflow-y-auto">
       {/* <LoginButton /> */}

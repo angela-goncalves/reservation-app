@@ -35,10 +35,3 @@ const restaurants = [
 export async function GET() {
   return NextResponse.json(restaurants);
 }
-
-export async function PUT(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "PUT") {
-    const { id } = req.body();
-    return id;
-  }
-}

@@ -13,12 +13,12 @@ const example = [
 export default function Chat({ rest }: any) {
   const { messages, setInput, input, handleInputChange, handleSubmit } =
     useChat();
-  // console.log("messages", messages);
   return (
     <div className="w-full min-h-screen bg-gray-200 flex flex-col justify-between p-4 overflow-y-auto">
       {/* <LoginButton /> */}
       {example.map((item: any) => (
         <Button
+          className="max-h-[500px]"
           onClick={() => {
             setInput(item);
           }}
@@ -42,7 +42,7 @@ export default function Chat({ rest }: any) {
               return (
                 <div
                   key={item.id}
-                  className="flex shadow-md rounded-tr-2xl rounded-l-2xl flex-col pr-16 ">
+                  className="flex shadow-md rounded-tr-2xl rounded-l-2xl flex-col pr-16 max-w-[240px]">
                   {item.content}
                 </div>
               );

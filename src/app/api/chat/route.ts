@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       createFunctionCallMessages
     ) => {
       const result = await runFunction(name, args);
-      // console.log("result", result);
+      console.log("result", result);
       const newMessages = createFunctionCallMessages(result);
       return openai.chat.completions.create({
         model: "gpt-3.5-turbo-0613",

@@ -2,6 +2,10 @@ import { CompletionCreateParams } from "openai/resources/chat/index";
 import * as chrono from "chrono-node";
 import { Restaurant, PeoplePerHour, Reservations } from "@/types/types";
 
+const baseURL = process.env.VERCEL_URL
+  ? "https://" + process.env.VERCEL_URL
+  : "http://localhost:3000";
+
 export const functions: CompletionCreateParams.Function[] = [
   {
     name: "extract_user_reservation",
@@ -57,7 +61,7 @@ async function extract_user_reservation(date: string, people: number) {
 }
 
 async function get_restaurant_data() {
-  const getRest = await fetch("http://localhost:3000/api/resdata");
+  const getRest = await fetch(`${baseURL}/api/resdata`);
   const data = await getRest.json();
   return data;
 }
@@ -66,7 +70,7 @@ async function check_restaurant_availability(
   dateUser: string,
   peopleUser: number
 ) {
-  const getRest = await fetch("http://localhost:3000/api/resdata");
+  const getRest = await fetch(`${baseURL}/api/resdata`);
   const restaurant = await getRest.json();
   const { date, people } = await extract_user_reservation(dateUser, peopleUser);
 

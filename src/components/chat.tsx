@@ -1,19 +1,38 @@
 "use client";
 
+import { Button } from "@radix-ui/themes";
 import { useChat } from "ai/react";
+import * as chrono from "chrono-node";
+
+const example = [
+  "Hello!, I would like to request a reservation for tomorrow at 19hs. We will be 4 people. Thank you!",
+  "Hi there! I would like to make a reservation for 21:00 this Saturday, for 3 people. Thank you!",
+  "Could I please reserve two tables, 'cause we are more than 4 people, for 22:00 next friday? Thank you!",
+];
 
 export default function Chat({ rest }: any) {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, setInput, input, handleInputChange, handleSubmit } =
+    useChat();
+  // console.log("messages", messages);
   return (
     <div className="w-full min-h-screen bg-gray-200 flex flex-col justify-between p-4 overflow-y-auto">
       {/* <LoginButton /> */}
+      {example.map((item: any) => (
+        <Button
+          onClick={() => {
+            setInput(item);
+          }}
+          key={item}>
+          {item}
+        </Button>
+      ))}
       <div className="p-2 flex flex-col">
         {messages.length > 0 ? (
           messages.map((item: any) => {
             if (item.role === "user") {
               return (
                 <div key={item.id} className="flex flex-col">
-                  <div className="bg-gray-600 shadow-md p-4 rounded-tr-2xl rounded-l-2xl self-end max-w-[240px] w-auto mt-4 text-end text-white">
+                  <div className="bg-gray-600 shadow-md p-4 rounded-tl-2xl rounded-r-2xl self-end max-w-[240px] w-auto mt-4 text-end text-white">
                     {item.content}
                   </div>
                 </div>
@@ -21,7 +40,9 @@ export default function Chat({ rest }: any) {
             }
             if (item.role === "assistant") {
               return (
-                <div key={item.id} className="flex flex-col pr-16 ">
+                <div
+                  key={item.id}
+                  className="flex shadow-md rounded-tr-2xl rounded-l-2xl flex-col pr-16 ">
                   {item.content}
                 </div>
               );

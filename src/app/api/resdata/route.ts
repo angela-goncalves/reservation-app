@@ -1,39 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
-const restaurant = [
-  {
-    name: "Ru's Kitchen",
-    id: 1,
-    time: ["19:00", "20:00", "21:00", "22:00"],
-    date: "friday, saturday and sunday",
-    peoplePerHour: 30,
-    reservation: [
-      {
-        id: 487,
-        name: "sultanita",
-        mail: "perenzeja@example.com",
-        telf: 1130845667,
-        time: "20:00",
-        people: 4,
-        date: "friday, august 25th",
-        comments: "",
-        spetialRequest: "",
-        eat: ["lumpia", "pollo picante", "carne picante"],
-        drink: ["zapata tinto wine", "water no soda"],
-        bill: "",
-      },
-    ],
-  },
+const restaurants = [
   {
     name: "picaron",
     id: 2,
     time: ["19:00", "20:00", "21:00", "22:00"],
-    date: "friday, saturday and sunday",
-    peoplePerHour: 30,
-    reservation: [
+    workDays: ["friday", "saturday", "sunday"],
+    peoplePerHour: [
+      { time: "19:00", amountChairs: 80 },
+      { time: "20:00", amountChairs: 75 },
+      { time: "21:00", amountChairs: 75 },
+      { time: "22:00", amountChairs: 75 },
+    ],
+    reservations: [
       {
-        id: 487,
+        id: 1,
         name: "sultanita",
         mail: "perenzeja@example.com",
         telf: 1130845667,
@@ -51,7 +33,7 @@ const restaurant = [
 ];
 
 export async function GET() {
-  return NextResponse.json(restaurant);
+  return NextResponse.json(restaurants);
 }
 
 export async function PUT(req: NextApiRequest, res: NextApiResponse) {

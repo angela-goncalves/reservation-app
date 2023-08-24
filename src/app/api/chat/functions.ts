@@ -1,10 +1,7 @@
 import { CompletionCreateParams } from "openai/resources/chat/index";
 import * as chrono from "chrono-node";
 import { Restaurant, PeoplePerHour, Reservations } from "@/types/types";
-
-const baseURL = process.env.VERCEL_URL
-  ? "https://" + process.env.VERCEL_URL
-  : "http://localhost:3000";
+import { baseURL } from "@/baseURL";
 
 export const functions: CompletionCreateParams.Function[] = [
   {

@@ -2,7 +2,6 @@
 
 import { Button } from "@radix-ui/themes";
 import { useChat } from "ai/react";
-import * as chrono from "chrono-node";
 
 const example = [
   "Hello!, I would like to request a reservation for tomorrow at 19hs. We will be 4 people. Thank you!",
@@ -10,7 +9,7 @@ const example = [
   "Could I please reserve two tables, 'cause we are more than 4 people, for 22:00 next friday? Thank you!",
 ];
 
-export default function Chat({ rest }: any) {
+export default function Chat() {
   const { messages, setInput, input, handleInputChange, handleSubmit } =
     useChat();
   return (

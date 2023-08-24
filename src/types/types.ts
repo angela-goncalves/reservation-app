@@ -1,10 +1,10 @@
 export interface Restaurant {
-  name: string;
   id: number;
-  time: string[];
-  workDays: string[];
+  name: string;
   peoplePerHour: PeoplePerHour[];
   reservations: Reservations[];
+  time: string[];
+  workDays: string[];
 }
 
 export interface PeoplePerHour {
@@ -13,16 +13,16 @@ export interface PeoplePerHour {
 }
 
 export interface Reservations {
-  id: number;
-  name: string;
-  mail: string;
-  telf: number;
-  time: string;
-  people: number;
+  bill: string;
   comments: string;
   date: Date;
-  spetialRequest: string;
-  eat: string[];
   drink: string[];
-  bill: string;
+  eat: string[];
+  id: number;
+  mail: string;
+  name: string;
+  people: number;
+  spetialRequest: string;
+  telf: number;
+  time: string;
 }

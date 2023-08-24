@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
-const restaurants = [
+const restaurant = [
   {
     name: "picaron",
     id: 2,
@@ -33,5 +33,5 @@ const restaurants = [
 ];
 
 export async function GET() {
-  return NextResponse.json(restaurants);
+  return NextResponse.json(restaurant);
 }

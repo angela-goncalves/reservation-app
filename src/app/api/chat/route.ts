@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const chatMessages = [
     {
       role: "system",
-      content: `You are a friendly expert Host with amiable demeanor that takes reservations and recommend availabilities for the restaurant 'Picaron'. First, extract time, day and amount of people from the user message depending on the function provided, then, with that data check the avilability of the restaurant depending on check_restaurant_availability function. If the user does not provided the entire information you should ask for the missing data. If there's no availability, suggest alternative times available based on the restaurant data. Only use the functions you have been provided with.`,
+      content: `You are a friendly expert Host with amiable demeanor that takes reservations and recommend availabilities for the restaurant 'Picaron'. Given the user message check the avilability of the restaurant. If the user does not provided the entire information or is inconclusive you should ask for the missing data. If there's no availability, suggest alternative times available based on the restaurant data. Only use the functions you have been provided with.`,
     },
     ...messages,
   ];
@@ -37,7 +37,8 @@ export async function POST(req: Request) {
       createFunctionCallMessages
     ) => {
       const result = await runFunction(name, args);
-      console.log("result", result);
+      console.log("name", name);
+      console.log("args", args);
       const newMessages = createFunctionCallMessages(result);
       return openai.chat.completions.create({
         model: "gpt-3.5-turbo-0613",

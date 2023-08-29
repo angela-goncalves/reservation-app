@@ -5,25 +5,6 @@ import { baseURL } from "@/baseURL";
 
 export const functions: CompletionCreateParams.Function[] = [
   {
-    name: "extract_user_reservation",
-    description:
-      "Extracts date and number of people from the user message. Return a json object",
-    parameters: {
-      type: "object",
-      properties: {
-        date: {
-          type: "string",
-          description: "date of the reservation",
-        },
-        people: {
-          type: "number",
-          description: "amount of people",
-        },
-      },
-      required: [],
-    },
-  },
-  {
     name: "check_restaurant_availability",
     description: "Check the availabily of the restaurant.",
     parameters: {
@@ -52,10 +33,6 @@ export const functions: CompletionCreateParams.Function[] = [
     },
   },
 ];
-async function extract_user_reservation(date: string, people: number) {
-  const dateuser = chrono.parseDate(date);
-  return { date: dateuser, people };
-}
 
 async function get_restaurant_data() {
   const getRest = await fetch(`${baseURL}/api/resdata`);
@@ -67,42 +44,66 @@ async function check_restaurant_availability(
   dateUser: string,
   peopleUser: number
 ) {
-  const getRest = await fetch(`${baseURL}/api/resdata`);
-  const restaurant = await getRest.json();
-  const { date, people } = await extract_user_reservation(dateUser, peopleUser);
+  const restaurant = await get_restaurant_data();
 
-  const filterdate = restaurant.filter((item: Restaurant) =>
-    item.reservations.some((ele: Reservations) => ele.date === date)
-  );
+  const date = chrono.parseDate(dateUser);
 
-  if (filterdate.length === 0) {
-    return true;
-  } else {
+  //take the week day from the costumer's date
+  const datestring = date.toString().split(" ");
+  const day = datestring[0];
+
+  // the restaurant is working that day?
+  if (!restaurant.workDays.includes(day)) {
+    return false;
+  }
+  // the restaurant is working at that time?
+  const time = datestring[4];
+  if (!restaurant.time.includes(time)) {
     return false;
   }
 
-  //   if (
-  //     !restaurant.workDays.includes(day.toLowerCase()) ||
-  //     !restaurant.time.includes(time)
-  //   ) {
-  //     return false;
-  //   }
+  const slot = restaurant.peoplePerHour.find(
+    (slot: PeoplePerHour) => slot.time === time
+  );
+  if (!slot) {
+    return false;
+  }
 
-  //   // Get maximum allowed people for that hour
-  //   const maxPeople = restaurant.peoplePerHour.find(
-  //     (entry: any) => entry.time === time
-  //   ).amountChairs;
+  const currentReservations = restaurant.reservations.filter(
+    (res: Reservations) => {
+      const datestring = res.date.toString().split(" ");
+      const dayRes = datestring[0];
+      const timeRes = datestring[4];
+      dayRes === day && timeRes === time;
+    }
+  );
 
-  //   // Calculate total number of people already reserved for that date and time
-  //   const reservedPeople = restaurant.reservations
-  //     .filter(
-  //       (res: any) => res.date.startsWith(day.toLowerCase()) && res.time === time
-  //     )
-  //     .reduce((sum: number, res: Reservation) => sum + res.people, 0);
+  const totalPeople = currentReservations.reduce(
+    (sum: number, res: Reservations) => sum + res.people,
+    0
+  );
 
-  //   // Check if there's enough space for the new reservation
-  //   return maxPeople && maxPeople - reservedPeople >= people;
+  return slot.amountChairs - totalPeople >= peopleUser ? true : false;
 }
+// async function suggest_alternative_times(){
+
+//     const restaurant = await get_restaurant_data();
+//     const { date, people } = await extract_user_reservation(
+//       dateUser,
+//       peopleUser
+//     );
+
+//     const filterdate = restaurant.filter((item: Restaurant) =>
+//       item.reservations.some((ele: Reservations) => ele.date === date)
+//     );
+
+//     console.log(people);
+//     if (filterdate.length === 0) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+// }
 
 export async function runFunction(name: string, args: any) {
   switch (name) {

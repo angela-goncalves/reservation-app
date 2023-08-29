@@ -1,10 +1,12 @@
-export interface Restaurant {
-  id: number;
-  name: string;
-  peoplePerHour: PeoplePerHour[];
-  reservations: Reservations[];
-  time: string[];
-  workDays: string[];
+export interface Location {
+  address: string;
+  city: string;
+  zipcode: string;
+}
+
+export interface Contact {
+  email: string;
+  phone: string;
 }
 
 export interface PeoplePerHour {
@@ -12,17 +14,36 @@ export interface PeoplePerHour {
   amountChairs: number;
 }
 
+export interface Review {
+  rating: number;
+  comment: string;
+}
+
 export interface Reservations {
-  bill: string;
-  comments: string;
-  date: Date;
-  drink: string[];
-  eat: string[];
   id: number;
-  mail: string;
   name: string;
+  mail: string;
+  phone: number;
   people: number;
-  spetialRequest: string;
-  telf: number;
-  time: string;
+  date: Date;
+  comments: string;
+  specialRequest: string;
+  eat: string[];
+  drink: string[];
+  bill: string;
+  status: string;
+  paymentMethod: string;
+}
+
+export interface Restaurant {
+  name: string;
+  id: number;
+  time: string[];
+  workDays: string[];
+  category: string;
+  location: Location;
+  contact: Contact;
+  peoplePerHour: PeoplePerHour[];
+  reviews: Review[];
+  reservations: Reservations[];
 }

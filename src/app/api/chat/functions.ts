@@ -12,7 +12,11 @@ export const functions: CompletionCreateParams.Function[] = [
       properties: {
         dateUser: {
           type: "string",
-          description: "date of the reservation",
+          description: "day, month and time of the reservation",
+        },
+        timeUser: {
+          type: "string",
+          description: "time of the reservation",
         },
         peopleUser: {
           type: "number",
@@ -42,76 +46,103 @@ async function get_restaurant_data() {
 
 async function check_restaurant_availability(
   dateUser: string,
+  timeUser: string,
   peopleUser: number
 ) {
   const restaurant = await get_restaurant_data();
 
+  // transform dateUser (day and month adding current year) into date
   const date = chrono.parseDate(dateUser);
+  const year = new Date().getFullYear();
+  const month = date.getMonth() + 1;
+  const dayNo = date.getDate();
 
-  //take the week day from the costumer's date
-  const datestring = date.toString().split(" ");
-  const day = datestring[0];
+  const dateUserInput = chrono
+    .parseDate(`reservation on ${year}-${month}-${dayNo} at ${timeUser}`)
+    .toString();
 
-  // the restaurant is working that day?
-  if (!restaurant.workDays.includes(day)) {
-    return false;
-  }
-  // the restaurant is working at that time?
-  const time = datestring[4];
-  if (!restaurant.time.includes(time)) {
-    return false;
-  }
+  const datestring = dateUserInput.split(" ");
+  const weekday = datestring[0];
 
-  const slot = restaurant.peoplePerHour.find(
-    (slot: PeoplePerHour) => slot.time === time
-  );
-  if (!slot) {
-    return false;
-  }
-
-  const currentReservations = restaurant.reservations.filter(
-    (res: Reservations) => {
-      const datestring = res.date.toString().split(" ");
-      const dayRes = datestring[0];
-      const timeRes = datestring[4];
-      dayRes === day && timeRes === time;
+  const mapRestaurant = restaurant.map((item: Restaurant) => {
+    // the restaurant is working that day?
+    if (!item.workDays.includes(weekday)) {
+      return `the restaurant does not work that day`;
     }
-  );
 
-  const totalPeople = currentReservations.reduce(
-    (sum: number, res: Reservations) => sum + res.people,
-    0
-  );
+    // the restaurant is working at that time?
+    const peoplePerHour = item.peoplePerHour.find((slot: PeoplePerHour) => {
+      return slot.time === timeUser;
+    });
 
-  return slot.amountChairs - totalPeople >= peopleUser ? true : false;
+    if (!peoplePerHour) {
+      console.log("peoplePerHour", peoplePerHour);
+      return `the restaurant does not work at that hour`;
+    }
+
+    // filter all reservations with same date
+    const currentReservations = item.reservations.filter(
+      (res: Reservations) => {
+        const resvDate = chrono.parseDate(res.date.toString());
+
+        // the currentResevations have the same date that the users asking?
+        const year = new Date().getFullYear();
+        const month = resvDate.getMonth() + 1;
+        const dayNo = resvDate.getDate();
+        const dateResvSaved = chrono
+          .parseDate(
+            `reservation saved on ${year}-${month}-${dayNo} at ${timeUser}`
+          )
+          .toString();
+
+        return dateResvSaved === dateUserInput;
+      }
+    );
+
+    // console.log("currentReservations", currentReservations);
+
+    const totalPeople = currentReservations.reduce(
+      (sum: number, res: Reservations) => sum + res.people,
+      0
+    );
+
+    if (totalPeople + peopleUser > peoplePerHour.amountChairs) {
+      return `there is no availability`;
+    } else {
+      return `there is availability`;
+    }
+  });
+
+  return mapRestaurant;
 }
-// async function suggest_alternative_times(){
 
-//     const restaurant = await get_restaurant_data();
-//     const { date, people } = await extract_user_reservation(
-//       dateUser,
-//       peopleUser
-//     );
+// async function suggest_alternative_times(dateUser: string, peopleUser: number) {
+//   const isAvailable = await check_restaurant_availability(dateUser, peopleUser);
+//   // if isAvailable is true there is availability
+//   // if isAvailable is false there is no availability for the users date or time
+//   // if the time does
+//   // return dates available as close as posible to the user date
 
-//     const filterdate = restaurant.filter((item: Restaurant) =>
-//       item.reservations.some((ele: Reservations) => ele.date === date)
-//     );
-
-//     console.log(people);
-//     if (filterdate.length === 0) {
-//       return true;
-//     } else {
-//       return false;
-//     }
+//   if (isAvailable) {
+//     return true;
+//   } else {
+//     return false;
+//   }
 // }
 
 export async function runFunction(name: string, args: any) {
   switch (name) {
+    // case "suggest_alternative_times":
+    //   return await suggest_alternative_times(
+    //     args["dateUser"],
+    //     args["peopleUser"]
+    //   );
     case "get_restaurant_data":
       return await get_restaurant_data();
     case "check_restaurant_availability":
       return await check_restaurant_availability(
         args["dateUser"],
+        args["timeUser"],
         args["peopleUser"]
       );
     default:

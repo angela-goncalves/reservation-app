@@ -76,7 +76,6 @@ async function check_restaurant_availability(
     });
 
     if (!peoplePerHour) {
-      console.log("peoplePerHour", peoplePerHour);
       return `the restaurant does not work at that hour`;
     }
 
@@ -99,8 +98,6 @@ async function check_restaurant_availability(
       }
     );
 
-    // console.log("currentReservations", currentReservations);
-
     const totalPeople = currentReservations.reduce(
       (sum: number, res: Reservations) => sum + res.people,
       0
@@ -115,20 +112,6 @@ async function check_restaurant_availability(
 
   return mapRestaurant;
 }
-
-// async function suggest_alternative_times(dateUser: string, peopleUser: number) {
-//   const isAvailable = await check_restaurant_availability(dateUser, peopleUser);
-//   // if isAvailable is true there is availability
-//   // if isAvailable is false there is no availability for the users date or time
-//   // if the time does
-//   // return dates available as close as posible to the user date
-
-//   if (isAvailable) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
 
 export async function runFunction(name: string, args: any) {
   switch (name) {
